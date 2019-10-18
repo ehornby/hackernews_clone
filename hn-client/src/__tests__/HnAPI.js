@@ -29,5 +29,29 @@ describe('HackerNews Api', () => {
             expect(axios.get).toHaveBeenCalledWith(`${storyUrl + 1}.json`);
             expect(entity).toEqual(singularStory);
         });
+
+        it('does not retrieve a story from the Api, but handles gracefully', async () => {
+            axios.get.mockImplementation(() => 
+                Promise.resolve({ data: emptySingularStory })
+            );
+
+            const entity = await getStory(1);
+            expect(axios.get).toHaveBeenCalledTimes(1);
+            expect(axios.get).toHaveBeenCalledWith(`${storyUrl + 1}.json`);
+            expect(entity).toEqual(emptySingularStory);
+        });
+    });
+
+    describe('getStoryIds functionality', () => {
+        it('requests and gets story ids from the HN Api', async () => {
+            axios.get.mockImplementation(() => 
+                Promise.resolve({ data: storyIds })
+            );
+
+            const entity = await getStoryIds();
+            expect(axios.get).toHaveBeenCalledTimes(1);
+            expect(axios.get).toHaveBeenCalledWith(newStoriesUrl);
+            expect(entity).toEqual(storyIds);
+        });
     });
 });
